@@ -44,7 +44,7 @@
 <script>
     const register = ()=>{
         const username = $('#usernameId').val()
-        const password = $.md5($('passwordId').val()+"@!&^%")
+        const password = $.md5($('#passwordId').val() + "@!&^%")
         $.post("/account/register", {username:username,password:password},
             function (result) {
                 console.log(result);

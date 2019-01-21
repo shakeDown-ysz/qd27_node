@@ -12,15 +12,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 //session  中间件
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
+app.use(session({ secret: 'keyboard cat',resave:false,saveUninitialized:false,  cookie: { maxAge: 60000 }}))
 //指定一个静态资源目录 开放出来
 app.use(express.static(path.join(__dirname,'public')))//设置金静态资源目录
 
 
 //导入路由对象
 const accountRouter = require(path.join(__dirname,'routers/accountRouter'))
-
+const studentRouter = require(path.join(__dirname,'routers/studentRouter'))
 // 将一级路径分配给对应的路由处理
 app.use('/account',accountRouter)//设置路由
+//设置学生路径的路由
+app.use('/student',studentRouter)
 
 app.listen(8000,err=> console.log('runing...'))

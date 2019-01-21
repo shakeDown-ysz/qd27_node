@@ -3,13 +3,13 @@
 const path = require('path')
 const MongoClient = require('mongodb').MongoClient;
 const captchapng = require('captchapng');
-
+const operationMongodb= require(path.join(__dirname,'../tools/databasetool'))
 // Connection URL
-//获取数据库路径
+// 获取数据库路径
 const url = 'mongodb://localhost:27017';
 
 // Database Name
-//获取数据库名字
+// 获取数据库名字
 const dbName = 'szhmqd27';
 
 exports.getRegisterPage = (req, res) => {
@@ -23,12 +23,10 @@ exports.register = (req, res) => {
     const {
         username
     } = req.body
-
-    console.log(username);
-    //连接数据库
     MongoClient.connect(url, {
         useNewUrlParser: true
-    }, function (err, client) {
+    }, 
+    function (err, client) {
         console.log("Connected successfully to server");
         if (err) throw err
         //创建一个数据库的db对象
@@ -66,6 +64,7 @@ exports.register = (req, res) => {
     })
 }
 
+
 exports.getloginPage = (req, res) => {
     res.sendFile(path.join(__dirname, '../public/views/login.html'))
 }
@@ -79,7 +78,7 @@ exports.vcode = (req, res) => {
     p.color(80, 80, 80, 255); // Second color: paint (red, green, blue, alpha)
 
     var img = p.getBase64();
-    var imgbase64 = new Buffer(img, 'base64');
+    var imgbase64 = Buffer.from(img, 'base64');
     res.writeHead(200, {
         'Content-Type': 'image/png'
     });
@@ -92,6 +91,7 @@ exports.login = (req, res) => {
         password,
         userVcode: userVcode
     } = req.body
+    console.log(username,password)
     const result = {
         status: 0,
         message: '登陆成功'
@@ -106,19 +106,40 @@ exports.login = (req, res) => {
         res.json(result)
         return
     } else {
-        collection.findOne({
-            username: username,
-            password: password
-        }, (err, doc) => {
+        operationMongodb('accountInfo','findOne',{username: username,password: password},(err, doc) => {
             if (doc) {
                 res.json(result)
-                client.close();
             } else {
                 result.status = 1
                 result.message = '账号或密码错误'
                 res.json(result)
-                client.close();
             }
         })
+        // MongoClient.connect(url, {
+        //     useNewUrlParser: true
+        // }, function (err, client) {
+        //     console.log("Connected successfully to server");
+        //     if (err) throw err
+        //     //创建一个数据库的db对象
+        //     const db = client.db(dbName);
+        //     //拿到要操作的集合
+        //     const collection = db.collection('accountInfo');
+
+
+        //     collection.findOne({
+        //         username: username,
+        //         password: password
+        //     }, (err, doc) => {
+        //         if (doc) {
+        //             res.json(result)
+        //             client.close();
+        //         } else {
+        //             result.status = 1
+        //             result.message = '账号或密码错误'
+        //             res.json(result)
+        //             client.close();
+        //         }
+        //     })
+        // })
     }
 }

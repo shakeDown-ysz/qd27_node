@@ -12,4 +12,5 @@ accountRouter.post('/register',accountController.register)
 accountRouter.get('/login',accountController.getloginPage) 
 accountRouter.get('/vcode',accountController.vcode) 
 accountRouter.post('/login',accountController.login)
+
 module.exports = accountRouter
