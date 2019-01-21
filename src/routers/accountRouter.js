@@ -8,4 +8,8 @@ const accountController = require(path.join(__dirname,'../controllers/accountCon
 
 accountRouter.get('/register',accountController.getRegisterPage)
 
+accountRouter.post('/register',accountController.register) 
+accountRouter.get('/login',accountController.getloginPage) 
+accountRouter.get('/vcode',accountController.vcode) 
+accountRouter.post('/login',accountController.login)
 module.exports = accountRouter
